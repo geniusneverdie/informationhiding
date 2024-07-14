@@ -1,0 +1,74 @@
+x=imread('.\lena.bmp');
+y=imresize(x, [256, 256]);
+I=rgb2gray(y);
+a=imbinarize(I);
+figure(1);
+imshow(x);title('原始图片');
+figure(2);
+imshow(y);title('调整大小后的图片');
+figure(3);
+imshow(a);title('二值化后的图片');
+A=zeros(512,512);
+B=zeros(512,512);
+[height,width]=size(a);
+for i=1: height
+    for j=1: width
+        if(a(i,j)==0)
+            random=rand()*4;
+            if(random>0&&random<=1)
+                A(2*i-1,2*j-1)=0;A(2*i-1,2*j)=0;A(2*i,2*j-1)=1;A(2*i,2*j)=1;
+                B(2*i-1,2*j-1)=1;B(2*i-1,2*j)=0;B(2*i,2*j-1)=1;B(2*i,2*j)=0;
+            end
+            if(random>1&&random<=2)
+                A(2*i-1,2*j-1)=0;A(2*i-1,2*j)=0;A(2*i,2*j-1)=1;A(2*i,2*j)=1;
+                B(2*i-1,2*j-1)=1;B(2*i-1,2*j)=0;B(2*i,2*j-1)=1;B(2*i,2*j)=1;
+            end
+            if(random>2&&random<3)
+                A(2*i-1,2*j-1)=1;A(2*i-1,2*j)=0;A(2*i,2*j-1)=1;A(2*i,2*j)=1;
+                B(2*i-1,2*j-1)=1;B(2*i-1,2*j)=0;B(2*i,2*j-1)=1;B(2*i,2*j)=1;
+            end
+            if(random>3&&random<=4)
+                A(2*i-1,2*j-1)=1;A(2*i-1,2*j)=0;A(2*i,2*j-1)=1;A(2*i,2*j)=1;
+                B(2*i-1,2*j-1)=0;B(2*i-1,2*j)=0;B(2*i,2*j-1)=1;B(2*i,2*j)=1;
+            end
+        end
+        if(a(i,j)==1)
+            random=rand()*4;
+            if(random>0&&random<=1)
+                A(2*i-1,2*j-1)=0;A(2*i-1,2*j)=0;A(2*i,2*j-1)=1;A(2*i,2*j)=1;
+                B(2*i-1,2*j-1)=1;B(2*i-1,2*j)=1;B(2*i,2*j-1)=0;B(2*i,2*j)=0;
+            end
+            if(random>1&&random<=2)
+                A(2*i-1,2*j-1)=0;A(2*i-1,2*j)=0;A(2*i,2*j-1)=1;A(2*i,2*j)=1;
+                B(2*i-1,2*j-1)=1;B(2*i-1,2*j)=1;B(2*i,2*j-1)=1;B(2*i,2*j)=0;
+            end
+            if(random>2&&random<=3)
+                A(2*i-1,2*j-1)=0;A(2*i-1,2*j)=1;A(2*i,2*j-1)=1;A(2*i,2*j)=1;
+                B(2*i-1,2*j-1)=1;B(2*i-1,2*j)=1;B(2*i,2*j-1)=1;B(2*i,2*j)=0;
+            end
+            if(random>3&&random<=4)
+                A(2*i-1,2*j-1)=1;A(2*i-1,2*j)=1;A(2*i,2*j-1)=1;A(2*i,2*j)=0;
+                B(2*i-1,2*j-1)=0;B(2*i-1,2*j)=0;B(2*i,2*j-1)=1;B(2*i,2*j)=1;
+            end
+        end
+    end
+end
+imwrite(A,'.\subkey1.png','png');
+imwrite(B,'.\subkey2.png','png');
+figure(4);
+imshow(A);title('子密钥1');
+figure(5);
+imshow(B);title('子密钥2');
+I=or(A,B);
+figure(6);
+imshow(I);title('合并后的四倍大小的中等灰度原图');
+C=ones(256,256);
+for i=1:height
+    for j=1:width
+        if((I(2*i-1,2*j-1)==0)||(I(2*i-1,2*j)==0)||(I(2*i,2*j-1)==0)||(I(2*i,2*j)==0))
+            C(i,j)=0;
+        end
+    end
+end
+figure(7);
+imshow(C);title('经过缩放得到的原图');
